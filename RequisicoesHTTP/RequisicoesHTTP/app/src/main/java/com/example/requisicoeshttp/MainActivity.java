@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 String apiCep = "https://viacep.com.br/ws/92120000/json/";
 
                 MyTask task = new MyTask();
-                task.execute(apiCep);
+                task.execute(apiPrices);
             }
         });
     }
@@ -89,7 +92,43 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String resultado) {
             super.onPostExecute(resultado);
-            textoResultado.setText(resultado);
+
+            String objetoValor = null;
+
+            //Convertendo para formato Json
+//            String enderecoCompleto = null;
+//            String logradouro = null;
+//            String cep = null;
+//            String complemento = null;
+//            String bairro = null;
+//            String localidade = null;
+//            String uf = null;
+
+            String valorMoeda = null;
+            String simbolo = null;
+
+            try {
+//                JSONObject jsonObject = new JSONObject(resultado);
+//                logradouro = jsonObject.getString("logradouro");
+//                cep = jsonObject.getString("cep");
+//                complemento = jsonObject.getString("complemento");
+//                bairro = jsonObject.getString("bairro");
+//                localidade = jsonObject.getString("localidade");
+//                uf = jsonObject.getString("uf");
+//                enderecoCompleto = "Cep: " + cep + "\nRua: " + logradouro +
+//                        "\nBairro: " + bairro + "\nCidade: " + localidade +
+//                        "\nComplemento: " + complemento + "\nUF: " + uf;
+
+                JSONObject jsonObject = new JSONObject(resultado);
+                objetoValor = jsonObject.getString("BRL");
+                JSONObject jsonObjectValorReal = new JSONObject(objetoValor);
+                valorMoeda = jsonObjectValorReal.getString("last");
+                simbolo = jsonObjectValorReal.getString("symbol");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            textoResultado.setText(simbolo + " " + valorMoeda);
         }
     }
 }
